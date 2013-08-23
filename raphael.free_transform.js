@@ -101,6 +101,12 @@
       }
 
       // Get the element's rotation
+      // ZIGGY: x and y here are the rotational position of the
+      // x and y handles
+      // ZIGGY: we could probably relabel these "east" and "south" and
+      // then add in a "west" for our additional control
+      // ZIGGY: the names are "x" and "y" so that we can used axis to
+      // dereference them
       var rad = {
         x: ( ft.attrs.rotate      ) * Math.PI / 180,
         y: ( ft.attrs.rotate + 90 ) * Math.PI / 180
@@ -113,12 +119,15 @@
 
       ft.axes.map(function(axis) {
         if ( ft.handles[axis] ) {
+          // ZIGGY: recall that (x, y) = (r * cos(theta), r * sin(theta))
+          // here r = radius[axis] * distance, where presumably distance decides the distance of the handle from the figure
           var
           cx = ft.attrs.center.x + ft.attrs.translate.x + radius[axis] * ft.opts.distance * Math.cos(rad[axis]),
           cy = ft.attrs.center.y + ft.attrs.translate.y + radius[axis] * ft.opts.distance * Math.sin(rad[axis])
           ;
 
           // Keep handle within boundaries
+          // ZIGGY: clamp function Math.max(lower, Math.min(x, upper))
           if ( ft.opts.boundary ) {
             cx = Math.max(Math.min(cx, ft.opts.boundary.x + ( ft.opts.boundary.width  || getPaperSize().x )), ft.opts.boundary.x);
             cy = Math.max(Math.min(cy, ft.opts.boundary.y + ( ft.opts.boundary.height || getPaperSize().y )), ft.opts.boundary.y);
@@ -127,13 +136,18 @@
           ft.handles[axis].disc.attr({ cx: cx, cy: cy });
 
           ft.handles[axis].line.toFront().attr({
-            path: [ [ 'M', ft.attrs.center.x + ft.attrs.translate.x, ft.attrs.center.y + ft.attrs.translate.y ], [ 'L', ft.handles[axis].disc.attrs.cx, ft.handles[axis].disc.attrs.cy ] ]
+            path: [ [ 'M', ft.attrs.center.x + ft.attrs.translate.x, ft.attrs.center.y + ft.attrs.translate.y ],
+                    [ 'L', ft.handles[axis].disc.attrs.cx, ft.handles[axis].disc.attrs.cy ]
+            ]
           });
 
           ft.handles[axis].disc.toFront();
         }
       });
 
+      // ZIGGY if there is a bbox at all
+      // then stroke out its rotated corners
+      // (we got them above with getBBox)
       if ( ft.bbox ) {
         ft.bbox.toFront().attr({
           path: [
@@ -155,6 +169,7 @@
           ft.handles.bbox.map(function (handle, i) {
             var cx, cy, j, k;
 
+            // ZIGGY: this is fairly self explanatory
             if ( handle.isCorner ) {
               cx = corners[i].x;
               cy = corners[i].y;
@@ -194,6 +209,8 @@
         });
       }
 
+      // ZIGGY: there doesn't seem to be a way for rotate to have 'self'
+      // possible value are 'axisX' and 'axisY'
       if ( ft.opts.rotate.indexOf('self') >= 0 ) {
         radius = Math.max(
           Math.sqrt(Math.pow(corners[1].x - corners[0].x, 2) + Math.pow(corners[1].y - corners[0].y, 2)),
@@ -210,6 +227,7 @@
     ft.showHandles = function() {
       ft.hideHandles();
 
+      // ZIGGY: give each handle a line and a disc
       ft.axes.map(function(axis) {
         ft.handles[axis] = {};
 
@@ -227,6 +245,7 @@
         ;
       });
 
+      // ZIGGY mark off a bounding box, potentially with scaling handles
       if ( ft.opts.draw.indexOf('bbox') >= 0 ) {
         ft.bbox = paper
         .path('')
@@ -237,18 +256,25 @@
         })
         ;
 
+        // ZIGGY this seems to be where handles.bbox gets initialized
         ft.handles.bbox = [];
 
         var i, handle;
 
+        // ZIGGY iterate from (0, 4), or (0, 8) or (4, 8) depending on whether you have cornerHandles, sideHandler, or both
         for ( i = ( ft.opts.scale.indexOf('bboxCorners') >= 0 ? 0 : 4 ); i < ( ft.opts.scale.indexOf('bboxSides') === -1 ? 4 : 8 ); i ++ ) {
           handle = {};
 
+          // first we do corners, alternating x and y designation
+          // then we do sides, again alternating
           handle.axis     = i % 2 ? 'x' : 'y';
           handle.isCorner = i < 4;
 
           handle.element = paper
-          .rect(ft.attrs.center.x, ft.attrs.center.y, ft.opts.size[handle.isCorner ? 'bboxCorners' : 'bboxSides' ] * 2, ft.opts.size[handle.isCorner ? 'bboxCorners' : 'bboxSides' ] * 2)
+          .rect(ft.attrs.center.x,
+                ft.attrs.center.y,
+                ft.opts.size[handle.isCorner ? 'bboxCorners' : 'bboxSides' ] * 2,
+                ft.opts.size[handle.isCorner ? 'bboxCorners' : 'bboxSides' ] * 2)
           .attr(ft.opts.attrs)
           ;
 
@@ -256,6 +282,7 @@
         }
       }
 
+      // ZIGGY mark off a bounding circle, with no handles
       if ( ft.opts.draw.indexOf('circle') !== -1 ) {
         ft.circle = paper
         .circle(0, 0, 0)
@@ -267,6 +294,7 @@
         ;
       }
 
+      // ZIGGY if there is a handle in the center
       if ( ft.opts.drag.indexOf('center') !== -1 ) {
         ft.handles.center = {};
 
@@ -279,9 +307,13 @@
       // Drag x, y handles
       ft.axes.map(function(axis) {
         if ( !ft.handles[axis] ) {
+          // ZIGGY: no handles NOP
           return;
         }
 
+        // ZIGGY: here again the axis is being used to build strings
+        // we could replace axisX and axisY with axisWest and axisNorth... but
+        // that is a little less semantic
         var
         rotate = ft.opts.rotate.indexOf('axis' + axis.toUpperCase()) !== -1,
         scale  = ft.opts.scale .indexOf('axis' + axis.toUpperCase()) !== -1
@@ -294,21 +326,38 @@
             dy *= ft.o.viewBoxRatio.y;
           }
 
+          // ZIGGY:QUESTION: center of the handle disc?
           var
           cx = dx + ft.handles[axis].disc.ox,
           cy = dy + ft.handles[axis].disc.oy
           ;
 
+          // ZIGGY:QUESTION: is this like, shrink vs grow?
+          // oh or maybe: if you stretch past the center, your shrink
+          // becomes a grow! hmm...
           var mirrored = {
             x: ft.o.scale.x < 0,
             y: ft.o.scale.y < 0
           };
 
+          // ZIGGY if this handle allows rotate
           if ( rotate ) {
+            // ZIGGY then determine the angle of rotation achieved
+            // SOH CAH TOA, so tangent(theta) = o/a = y/x
+            // and theta = arctan(y/x) (atan2 is a binary arctan that takes y, and x)
             var rad = Math.atan2(cy - ft.o.center.y - ft.o.translate.y, cx - ft.o.center.x - ft.o.translate.x);
 
+            // ZIGGY:RADAR convert to degrees
+            // here we will need to be careful because "y" is used as a magic number
+            // if x and y are east and south, and we take east as the default,
+            // then each of south, west, and north will need an additional 90 degrees
+            // consider: if I drag an object by its east handle, then position of the
+            // handle can give us the radians of the rotation
+            // if, on the other hand, I drag a south handle the handle by itself
+            // tells me that I rotated the object by rad + 90 degrees
             ft.attrs.rotate = rad * 180 / Math.PI - ( axis === 'y' ? 90 : 0 );
 
+            // ZIGGY:QUESTION: not sure what this is
             if ( mirrored[axis] ) {
               ft.attrs.rotate -= 180;
             }
@@ -320,19 +369,28 @@
             cy = Math.max(Math.min(cy, ft.opts.boundary.y + ( ft.opts.boundary.height || getPaperSize().y )), ft.opts.boundary.y);
           }
 
+          // ZIGGY:RADAR: ft.o is for offset
+          // distance function sqrt((x_1 - x_2)^2 + (y_1 - y_2)^2)
+          // this is used in scale below and is the distance of the scale gesture
+          // I think I will move this into the if (scale) {} block
           var radius = Math.sqrt(Math.pow(cx - ft.o.center.x - ft.o.translate.x, 2) + Math.pow(cy - ft.o.center.y - ft.o.translate.y, 2));
 
           if ( scale ) {
             ft.attrs.scale[axis] = radius / ( ft.o.size[axis] / 2 * ft.opts.distance );
 
+            // ZIGGY:QUESTION again this seems to indicate that mirrored means
+            // "your shrink became a grow"
             if ( mirrored[axis] ) {
               ft.attrs.scale[axis] *= -1;
             }
           }
 
+          // ZIGGY:RADAR I think we can safely ignore this function, since it never refers to 'axis'
           applyLimits();
 
           // Maintain aspect ratio
+          // ZIGGY:RADAR this is another place that will need some work
+          // probably just map from 'north'/'south' to "y" within the keepRatio function
           if ( ft.opts.keepRatio.indexOf('axis' + axis.toUpperCase()) !== -1 ) {
             keepRatio(axis);
           } else {
@@ -537,6 +595,8 @@
             };
           }
 
+          // ZIGGY:RADAR: will need to deal with this as well
+          // actually... we may be able to ignore this?
           ft.axes.map(function(axis) {
             if ( ft.handles[axis] ) {
               ft.handles[axis].disc.ox = ft.handles[axis].disc.attrs.cx;
@@ -612,10 +672,6 @@
     /**
      * Remove handles
      */
-
-    /*
-
-*/
     ft.hideHandles = function(opts) {
       var opts = opts || {}
 
@@ -635,6 +691,9 @@
         ft.handles.center = null;
       }
 
+      // ZIGGY:RADAR again with the literals
+      // this is not problem though, since we can just extend this
+      // array to contain north south, etc
       [ 'x', 'y' ].map(function(axis) {
           if ( ft.handles[axis] ) {
           ft.handles[axis].disc.remove();
@@ -642,7 +701,7 @@
 
           ft.handles[axis] = null;
           }
-          });
+      });
 
       if ( ft.bbox ) {
         ft.bbox.remove();
@@ -699,6 +758,9 @@
           }
           });
 
+      // ZIGGY: axis is used as a sort of label for the handles, it is always accompanied by
+      // ft.handles[axis]. I think we could replace this with 'direction' and have an arbitrary
+      // number of handles
       ft.axes = [];
 
       if ( ft.opts.rotate.indexOf('axisX') >= 0 || ft.opts.scale.indexOf('axisX') >= 0 ) { ft.axes.push('x'); }
