@@ -68,7 +68,7 @@
       bbox: null,
       callback: null,
       items: [],
-      handles: { center: null, x: null, y: null },
+      handles: { center: null, east: null, south: null, west: null, north: null },
       offset: {
         rotate: 0,
         scale: { x: 1, y: 1 },
@@ -108,13 +108,17 @@
       // ZIGGY: the names are "x" and "y" so that we can used axis to
       // dereference them
       var rad = {
-        x: ( ft.attrs.rotate      ) * Math.PI / 180,
-        y: ( ft.attrs.rotate + 90 ) * Math.PI / 180
+        east: ( ft.attrs.rotate      ) * Math.PI / 180,
+        south: ( ft.attrs.rotate + 90 ) * Math.PI / 180,
+        west: ( ft.attrs.rotate + 180 ) * Math.PI / 180,
+        north: ( ft.attrs.rotate + 270 ) * Math.PI / 180
       };
 
       var radius = {
-        x: ft.attrs.size.x / 2 * ft.attrs.scale.x,
-        y: ft.attrs.size.y / 2 * ft.attrs.scale.y
+        east: ft.attrs.size.x / 2 * ft.attrs.scale.x,
+        south: ft.attrs.size.y / 2 * ft.attrs.scale.y,
+        west: ft.attrs.size.x / 2 * ft.attrs.scale.x,
+        north: ft.attrs.size.x / 2 * ft.attrs.scale.y
       };
 
       ft.axes.map(function(axis) {
@@ -336,8 +340,10 @@
           // oh or maybe: if you stretch past the center, your shrink
           // becomes a grow! hmm...
           var mirrored = {
-            x: ft.o.scale.x < 0,
-            y: ft.o.scale.y < 0
+            east: ft.o.scale.x < 0,
+            south: ft.o.scale.y < 0,
+            west: ft.o.scale.x < 0,
+            north: ft.o.scale.y < 0
           };
 
           // ZIGGY if this handle allows rotate
@@ -355,7 +361,15 @@
             // handle can give us the radians of the rotation
             // if, on the other hand, I drag a south handle the handle by itself
             // tells me that I rotated the object by rad + 90 degrees
-            ft.attrs.rotate = rad * 180 / Math.PI - ( axis === 'y' ? 90 : 0 );
+            var handle_offset;
+            switch(axis) {
+              case 'east' : handle_offset = 0; break;
+              case 'south': handle_offset = 90; break;
+              case 'west':  handle_offset = 180; break;
+              case 'north': handle_offset = 270; break;
+            }
+
+            ft.attrs.rotate = rad * 180 / Math.PI - handle_offset;
 
             // ZIGGY:QUESTION: not sure what this is
             if ( mirrored[axis] ) {
@@ -375,13 +389,16 @@
           // I think I will move this into the if (scale) {} block
           var radius = Math.sqrt(Math.pow(cx - ft.o.center.x - ft.o.translate.x, 2) + Math.pow(cy - ft.o.center.y - ft.o.translate.y, 2));
 
+          // ZIGGY: we need to access the property 'x' on scale based on whether
+          // axis is horizontal or vertical
           if ( scale ) {
-            ft.attrs.scale[axis] = radius / ( ft.o.size[axis] / 2 * ft.opts.distance );
+            var local_axis = getCartesianAxisForDirection(axis);
+            ft.attrs.scale[local_axis] = radius / ( ft.o.size[local_axis] / 2 * ft.opts.distance );
 
             // ZIGGY:QUESTION again this seems to indicate that mirrored means
             // "your shrink became a grow"
             if ( mirrored[axis] ) {
-              ft.attrs.scale[axis] *= -1;
+              ft.attrs.scale[local_axis] *= -1;
             }
           }
 
@@ -515,7 +532,7 @@
           }, function() {
             var
             rotate = ( ( 360 - ft.attrs.rotate ) % 360 ) / 180 * Math.PI,
-            handlePos = handle.element.attr(['x', 'y'])
+            handlePos = handle.element.attr(['east', 'south'])
             ;
 
             // Offset values
@@ -694,7 +711,7 @@
       // ZIGGY:RADAR again with the literals
       // this is not problem though, since we can just extend this
       // array to contain north south, etc
-      [ 'x', 'y' ].map(function(axis) {
+      [ 'east', 'south', 'west' ].map(function(axis) {
           if ( ft.handles[axis] ) {
           ft.handles[axis].disc.remove();
           ft.handles[axis].line.remove();
@@ -749,22 +766,24 @@
       if ( ft.opts.animate   === true ) { ft.opts.animate   = { delay:   700, easing: 'linear' }; }
       if ( ft.opts.drag      === true ) { ft.opts.drag      = [ 'center', 'self' ]; }
       if ( ft.opts.keepRatio === true ) { ft.opts.keepRatio = [ 'bboxCorners', 'bboxSides' ]; }
-      if ( ft.opts.rotate    === true ) { ft.opts.rotate    = [ 'axisX', 'axisY' ]; }
-      if ( ft.opts.scale     === true ) { ft.opts.scale     = [ 'axisX', 'axisY', 'bboxCorners', 'bboxSides' ]; }
+      if ( ft.opts.rotate    === true ) { ft.opts.rotate    = [ 'axisEAST', 'axisSOUTH', 'axisWEST', 'axisNORTH']; }
+      if ( ft.opts.scale     === true ) { ft.opts.scale     = [ 'axisEAST', 'axisSOUTH', 'axisWEST', 'axisNORTH', 'bboxCorners', 'bboxSides' ]; }
 
       [ 'drag', 'draw', 'keepRatio', 'rotate', 'scale' ].map(function(option) {
-          if ( ft.opts[option] === false ) {
+        if ( ft.opts[option] === false ) {
           ft.opts[option] = [];
-          }
-          });
+        }
+      });
 
       // ZIGGY: axis is used as a sort of label for the handles, it is always accompanied by
       // ft.handles[axis]. I think we could replace this with 'direction' and have an arbitrary
       // number of handles
       ft.axes = [];
 
-      if ( ft.opts.rotate.indexOf('axisX') >= 0 || ft.opts.scale.indexOf('axisX') >= 0 ) { ft.axes.push('x'); }
-      if ( ft.opts.rotate.indexOf('axisY') >= 0 || ft.opts.scale.indexOf('axisY') >= 0 ) { ft.axes.push('y'); }
+      if ( ft.opts.rotate.indexOf('axisEAST') >= 0 || ft.opts.scale.indexOf('axisEAST') >= 0 ) { ft.axes.push('east'); }
+      if ( ft.opts.rotate.indexOf('axisSOUTH') >= 0 || ft.opts.scale.indexOf('axisSOUTH') >= 0 ) { ft.axes.push('south'); }
+      if ( ft.opts.rotate.indexOf('axisWEST') >= 0 || ft.opts.scale.indexOf('axisWEST') >= 0 ) { ft.axes.push('west'); }
+      if ( ft.opts.rotate.indexOf('axisNORTH') >= 0 || ft.opts.scale.indexOf('axisNORTH') >= 0 ) { ft.axes.push('north'); }
 
       [ 'drag', 'rotate', 'scale' ].map(function(option) {
           if ( !ft.opts.snapDist[option] ) {
@@ -1096,7 +1115,7 @@ axes:        ft.opts.size,
     }
 
     function keepRatio(axis) {
-      if ( axis === 'x' ) {
+      if ( axis === 'east' || axis === 'west' ) {
         ft.attrs.scale.y = ft.attrs.scale.x / ft.attrs.ratio;
       } else {
         ft.attrs.scale.x = ft.attrs.scale.y * ft.attrs.ratio;
@@ -1132,6 +1151,23 @@ axes:        ft.opts.size,
 
         setTimeout(function() { if ( ft.callback ) { ft.callback(ft, events); } }, 1);
       }
+    }
+
+    /**
+     * Given a direction like 'north' returns 'x' or 'y' depending on whether
+     * the given direction is a 'vertical' or 'horizontal' direction
+     */
+    function getCartesianAxisForDirection(direction) {
+      var axis = '';
+
+      switch(direction) {
+        case 'north': axis = 'y'; break;
+        case 'south': axis = 'y'; break;
+        case 'east' : axis = 'x'; break;
+        case 'west' : axis = 'x'; break;
+      }
+
+      return axis;
     }
 
     ft.updateHandles();
