@@ -37,7 +37,8 @@
     };
 
     icon.attrs = icon[0].attrs;
-    icon.node = icon[0].node;
+    icon.node = icon[1].node;
+
     return icon;
   };
 
