@@ -535,7 +535,7 @@
           }, function() {
             var
             rotate = ( ( 360 - ft.attrs.rotate ) % 360 ) / 180 * Math.PI,
-            handlePos = handle.element.attr(['east', 'south'])
+            handlePos = handle.element.attr(['x', 'y'])
             ;
 
             // Offset values
@@ -796,18 +796,18 @@
 
       // Force numbers
       ft.opts.range = {
-rotate: [ parseFloat(ft.opts.range.rotate[0]), parseFloat(ft.opts.range.rotate[1]) ],
+        rotate: [ parseFloat(ft.opts.range.rotate[0]), parseFloat(ft.opts.range.rotate[1]) ],
         scale:  [ parseFloat(ft.opts.range.scale[0]),  parseFloat(ft.opts.range.scale[1])  ]
       };
 
       ft.opts.snap = {
-drag:   parseFloat(ft.opts.snap.drag),
+        drag:   parseFloat(ft.opts.snap.drag),
         rotate: parseFloat(ft.opts.snap.rotate),
         scale:  parseFloat(ft.opts.snap.scale)
       };
 
       ft.opts.snapDist = {
-drag:   parseFloat(ft.opts.snapDist.drag),
+        drag:   parseFloat(ft.opts.snapDist.drag),
         rotate: parseFloat(ft.opts.snapDist.rotate),
         scale:  parseFloat(ft.opts.snapDist.scale)
       };
@@ -818,10 +818,10 @@ drag:   parseFloat(ft.opts.snapDist.drag),
 
       if ( !isNaN(ft.opts.size) ) {
         ft.opts.size = {
-axes:        ft.opts.size,
-             bboxCorners: ft.opts.size,
-             bboxSides:   ft.opts.size,
-             center:      ft.opts.size
+          axes:        ft.opts.size,
+          bboxCorners: ft.opts.size,
+          bboxSides:   ft.opts.size,
+          center:      ft.opts.size
         };
       }
 
