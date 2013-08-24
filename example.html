@@ -48,10 +48,13 @@
     ft = paper.freeTransform(rect, {
         draw: ['circle'],
         drag:['self'],
+        distance: 1.5,
         keepRatio: ['axisNORTH'],
+        attrs: { fill: 'red', something: 'bob'},
         rotate: ['axisSOUTH'],
         scale: ['axisNORTH'],
         evented: ['axisWEST', 'axisSOUTH'],
+        snap: { scale: 0.0001, rotate: 0 },
         size: 10,
         handle_images: { north: 'warn_icon.png' }}, function(ft, events) {
         // callback console.log(ft.attrs);

@@ -289,6 +289,7 @@
         // ZIGGY: attach event handler to the evented handles
         if (ft.opts.evented) {
           if (ft.opts.evented.indexOf('axis' + axis.toUpperCase()) !== -1) {
+            ft.handles[axis].disc.node.setAttribute("class", axis);
             ft.handles[axis].disc.click(function() {
               console.log("click");
             });
