@@ -19,34 +19,6 @@ Examples
 <script type="text/javascript" src="raphael-min.js"></script>
 <script type="text/javascript" src="raphael.free_transform.js"></script>
 
-<div id="options">
-  <pre>
-    ft = paper.freeTransform(rect, {
-      draw: ['circle'],
-      drag:['self'],
-      distance: 1.5,
-      keepRatio: ['axisNORTH'],
-      attrs: { fill: 'green', stroke: 'blue' },
-      handle_attrs: {
-        west: { fill: 'red' },
-      },
-      handle_classes: {
-        north: "master", west: "slave"
-      },
-      rotate: ['axisSOUTH'],
-      scale: ['axisNORTH'],
-      evented: ['axisWEST', 'axisSOUTH'],
-      snap: { scale: 0.0001, rotate: 0 },
-      size: 10,
-      handle_images: { 
-        north: 'images/scale_icon.png', 
-        south: 'images/rotate_icon.png', 
-        west: 'images/delete_icon.png' }
-    }, function(ft, events) {
-      // callback console.log(ft.attrs);
-    });
-  </pre>
-</div>
 <div id="holder" style="height: 100%;"></div>
 
 <script type="text/javascript">
