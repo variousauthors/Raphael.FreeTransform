@@ -117,6 +117,7 @@
         snapDist: { rotate: 0, scale: 0, drag: 7 },
         size: 5,
         handle_images: { center: null, east: null, south: null, west: null, north: null },
+        handle_attrs: { center: null, east: null, south: null, west: null, north: null },
         handle_classes: { center: null, east: null, south: null, west: null, north: null }
       },
       subject: subject
@@ -276,22 +277,27 @@
           opacity: .5
         });
 
-        if (ft.opts.handle_images[axis]) {
+        if (ft.opts.handle_images && ft.opts.handle_images[axis]) {
           ft.handles[axis].disc = paper
-          .transformIcon(ft.opts.handle_images[axis], ft.attrs.center.x, ft.attrs.center.y, ft.opts.size.axes)
-          .attr(ft.opts.attrs)
-          ;
+          .transformIcon(ft.opts.handle_images[axis], ft.attrs.center.x, ft.attrs.center.y, ft.opts.size.axes);
         } else {
           ft.handles[axis].disc = paper
-          .circle(ft.attrs.center.x, ft.attrs.center.y, ft.opts.size.axes)
-          .attr(ft.opts.attrs)
-          ;
+          .circle(ft.attrs.center.x, ft.attrs.center.y, ft.opts.size.axes);
+        }
+
+        // ZIGGY: attach attributes specified on the handles
+        ft.handles[axis].disc.attr(ft.opts.attrs);
+        if (ft.opts.handle_attrs && ft.opts.handle_attrs[axis]) {
+          ft.handles[axis].disc.attr(ft.opts.handle_attrs[axis]);
+        }
+
+        if (ft.opts.handle_classes && ft.opts.handle_classes[axis]) {
+          ft.handles[axis].disc.node.setAttribute("class", ft.opts.handle_classes[axis]);
         }
 
         // ZIGGY: attach event handler to the evented handles
         if (ft.opts.evented) {
           if (ft.opts.evented.indexOf('axis' + axis.toUpperCase()) !== -1) {
-            ft.handles[axis].disc.node.setAttribute("class", axis);
             ft.handles[axis].disc.click(function() {
               console.log("click");
             });

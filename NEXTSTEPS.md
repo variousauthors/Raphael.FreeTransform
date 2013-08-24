@@ -21,7 +21,7 @@
     to be able to specify icons to be used. Not sure whether we would use
     favicons, arbitrary URLs, or a small set of icons...
 [ ] Allow sizes to be specified per handle
-[ ] Allow attrs to be specified per handle, with the top level attrs option
+[x] Allow attrs to be specified per handle, with the top level attrs option
     being the default and the rest cascading (so if you set fill and stroke
     on attrs, and only fill on south-attrs, then it will still get the stroke
     you defined).
@@ -39,4 +39,4 @@
     constant distance from the center, all on the perimeter of a circle. As
     it stands we can only specify a ratio, but that is a problem with long thin
     objects.
-[ ] We should be able to add custom classes to the handles
+[x] We should be able to add custom classes to the handles

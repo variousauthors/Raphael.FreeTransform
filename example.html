@@ -6,15 +6,27 @@
     ft = paper.freeTransform(rect, {
       draw: ['circle'],
       drag:['self'],
-      scale: ['axisNORTH'], // the north handle scales and preserves ratio
+      distance: 1.5,
       keepRatio: ['axisNORTH'],
-      rotate: ['axisSOUTH'], // the south handle rotates and receives click events
-      evented: ['axisWEST', 'axisSOUTH'], // the west handle receives click events
+      attrs: { fill: 'green', stroke: 'blue' },
+      handle_attrs: {
+        west: { fill: 'red' },
+      },
+      handle_classes: {
+        north: "master", west: "slave"
+      },
+      rotate: ['axisSOUTH'],
+      scale: ['axisNORTH'],
+      evented: ['axisWEST', 'axisSOUTH'],
+      snap: { scale: 0.0001, rotate: 0 },
       size: 10,
-      handle_images: { north: 'warn_icon.png' }}, function(ft, events) {
-        console.log(ft.attrs);
-      });
-    }
+      handle_images: { 
+        north: 'images/scale_icon.png', 
+        south: 'images/rotate_icon.png', 
+        west: 'images/delete_icon.png' }
+    }, function(ft, events) {
+      // callback console.log(ft.attrs);
+    });
   </pre>
 </div>
 <div id="holder" style="height: 100%;"></div>
@@ -23,7 +35,7 @@
     var paper = Raphael(0, 0, 500, 500);
 
     var rect = paper
-        .rect(200, 200, 100, 100)
+        .rect(350, 200, 100, 100)
         .attr('fill', '#f00')
         ;
 
@@ -46,18 +58,28 @@
 
     // Add freeTransform with options and callback
     ft = paper.freeTransform(rect, {
-        draw: ['circle'],
-        drag:['self'],
-        distance: 1.5,
-        keepRatio: ['axisNORTH'],
-        attrs: { fill: 'red', something: 'bob'},
-        rotate: ['axisSOUTH'],
-        scale: ['axisNORTH'],
-        evented: ['axisWEST', 'axisSOUTH'],
-        snap: { scale: 0.0001, rotate: 0 },
-        size: 10,
-        handle_images: { north: 'images/scale_icon.png', south: 'images/rotate_icon.png', west: 'images/delete_icon.png' }}, function(ft, events) {
-        // callback console.log(ft.attrs);
+      draw: ['circle'],
+      drag:['self'],
+      distance: 1.5,
+      keepRatio: ['axisNORTH'],
+      attrs: { fill: 'green', stroke: 'blue' },
+      handle_attrs: {
+        west: { fill: 'red' },
+      },
+      handle_classes: {
+        north: "master", west: "slave"
+      },
+      rotate: ['axisSOUTH'],
+      scale: ['axisNORTH'],
+      evented: ['axisWEST', 'axisSOUTH'],
+      snap: { scale: 0.0001, rotate: 0 },
+      size: 10,
+      handle_images: { 
+        north: 'images/scale_icon.png', 
+        south: 'images/rotate_icon.png', 
+        west: 'images/delete_icon.png' }
+    }, function(ft, events) {
+      // callback console.log(ft.attrs);
     });
 
 </script>

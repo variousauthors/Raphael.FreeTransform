@@ -141,6 +141,8 @@ from the browser. This option can be combined with rotate and scale, or it
 can be used on its own to create a handle that has not transformation but
 receives click events.
 
+This option is most useful in combination with `handle_classes` described below.
+
 At the moment the handle only receives the event.
 
 Default: false
@@ -172,6 +174,23 @@ Sets the images to be used for each handle. If only some of the handles are
 given images, the rest will be drawn normally. The images will be scaled
 to match the axis size option given above. If the false value is passed in,
 then the handles will be rendered as circles.
+
+Default: false
+
+
+####  `handle_attrs: false | { east: string, south: string, west: string, north: string }`
+
+Sets the attributes of each handle individually, in addition to any attributes
+previously set with `attrs`. The given values cascade over the previosuly set
+attrs, so if `attrs: { fill: 'red', stroke: 'blue' }` and `handle_attrs: { east: { fill: 'blue' } }`,
+then the east handle will have a blue fill and a blue outline.
+
+Default: false
+
+
+####  `handle_classes: false | { east: string, south: string, west: string, north: string }`
+
+Sets classes on the handles. This can be useful!
 
 Default: false
 
