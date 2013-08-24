@@ -15,22 +15,22 @@
     factory(Raphael);
   }
 }(this, function(Raphael) {
-  Raphael.fn.transformIcon = function(img, x, y){
+  Raphael.fn.transformIcon = function(img, x, y, r){
     var icon = this.set();
-    icon.push(this.circle(x, y, 8).attr({
+    icon.push(this.circle(x, y, r).attr({
       fill: '#99b',
       stroke: '#446',
       'fill-opacity': 0.85
     }));
-    icon.push(this.image(img, x-8, y-8, 16, 16));
+    icon.push(this.image(img, x-r, y-r, 2 * r, 2 * r));
     // icon.draggable();
     icon.attr = function(obj) {
       this[0].attr(obj);
       if(obj.cx){
-        obj.x = obj.cx - 8;
+        obj.x = obj.cx - r;
       }
       if(obj.cy){
-        obj.y = obj.cy - 8;
+        obj.y = obj.cy - r;
       }
       this[1].attr(obj);
       return this;
@@ -274,7 +274,7 @@
 
         if (ft.opts.handle_images[axis]) {
           ft.handles[axis].disc = paper
-          .transformIcon(ft.opts.handle_images[axis], ft.attrs.center.x, ft.attrs.center.y)
+          .transformIcon(ft.opts.handle_images[axis], ft.attrs.center.x, ft.attrs.center.y, ft.opts.size.axes)
           .attr(ft.opts.attrs)
           ;
         } else {

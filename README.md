@@ -155,6 +155,15 @@ Sets the radius of the handles in pixels.
 
 Default: `5`
 
+####  `handle_images: false | { east: string, south: string, west: string, north: string }`
+
+Sets the images to be used for each handle. If only some of the handles are
+given images, the rest will be drawn normally. The images will be scaled
+to match the axis size option given above. If the false value is passed in,
+then the handles will be rendered as circles.
+
+Default: false
+
 
 Callback
 --------
