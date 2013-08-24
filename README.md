@@ -101,9 +101,11 @@ Additional elements to draw.
 Default: `false`
 
 
-#### `keepRatio: true | [ 'axisX', 'axisY', 'bboxCorners', 'bboxSides' ] | false`
+#### `keepRatio: true | [ 'axisEAST', 'axisSOUTH', 'axisWEST', 'axisNORTH', 'bboxCorners', 'bboxSides' ] | false`
 
-Scale axes together or individually.
+Scale axes together or individually. Values like 'axisNORTH' force the aspect
+ratio when the northern handle is used to perform scaling; handles not specified
+can still be used for scaling only one axis or the other.
 
 Default: `false`
 
@@ -117,14 +119,18 @@ Default: `{ rotate: [ -180, 180 ], scale: [ 0, 99999 ] }`
 
 #### `rotate: true | [ 'axisX', 'axisY', 'self' ]|false`
 
-Enables/disables rotating.
+Enables/disables rotating. Values like 'axisNORTH' enable control of rotational transformations on
+just the selected handle, while 'bboxCorners' enables rotation for all corner handles.
 
 Default: `[ 'axisX', 'axisY' ]`
 
 
 #### `scale: true | [ 'axisX', 'axisY', 'bboxCorners', 'bboxSides' ] | false`
 
-Enables/disables scaling.
+Enables/disables scaling. When 'axisNORTH' or 'axisSOUTH' are provided,
+the handle controls scaling along the y-axis, in both directions at once.
+When 'axisEAST' or 'axisWEST' are provided, scaling is along the x-axis.
+Values like 'bboxCorners' enable scaling by dragging corner handles.
 
 Default: `[ 'axisX', 'axisY', 'bboxCorners', 'bboxSides' ]`
 
