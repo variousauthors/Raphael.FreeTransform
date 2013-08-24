@@ -60,24 +60,20 @@
     ft = paper.freeTransform(rect, {
       draw: ['circle'],
       drag:['self'],
-      distance: 1.5,
       keepRatio: ['axisNORTH'],
       attrs: { fill: 'green', stroke: 'blue' },
-      handle_attrs: {
-        west: { fill: 'red' },
-      },
-      handle_classes: {
-        north: "master", west: "slave"
-      },
       rotate: ['axisSOUTH'],
       scale: ['axisNORTH'],
       evented: ['axisWEST', 'axisSOUTH'],
       snap: { scale: 0.0001, rotate: 0 },
+      handles: {
+        east: {},
+        south: { image: 'images/rotate_icon.png', size: 15 },
+        west: { attrs: { fill: 'red' }, classes: 'slave', image: 'images/delete_icon.png', distance: 2 },
+        north: { classes: 'master', image: 'images/scale_icon.png', size: 15 },
+      },
       size: 10,
-      handle_images: { 
-        north: 'images/scale_icon.png', 
-        south: 'images/rotate_icon.png', 
-        west: 'images/delete_icon.png' }
+      distance: 1.5,
     }, function(ft, events) {
       // callback console.log(ft.attrs);
     });

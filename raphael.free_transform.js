@@ -116,9 +116,13 @@
         snap: { rotate: 0, scale: 0, drag: 0 },
         snapDist: { rotate: 0, scale: 0, drag: 7 },
         size: 5,
-        handle_images: { center: null, east: null, south: null, west: null, north: null },
-        handle_attrs: { center: null, east: null, south: null, west: null, north: null },
-        handle_classes: { center: null, east: null, south: null, west: null, north: null }
+        handles: {
+          center: null,
+          east: { attrs: null, image: null, classes: null, size: null, distance: null },
+          south: { attrs: null, image: null, classes: null, size: null, distance: null },
+          west: { attrs: null, image: null, classes: null, size: null, distance: null },
+          north: { attrs: null, image: null, classes: null, size: null, distance: null }
+        }
       },
       subject: subject
     };
@@ -157,9 +161,10 @@
         if ( ft.handles[axis] ) {
           // ZIGGY: recall that (x, y) = (r * cos(theta), r * sin(theta))
           // here r = radius[axis] * distance, where presumably distance decides the distance of the handle from the figure
+          var distance = (ft.opts.handles[axis].distance)? ft.opts.handles[axis].distance : ft.opts.distance;
           var
-          cx = ft.attrs.center.x + ft.attrs.translate.x + radius[axis] * ft.opts.distance * Math.cos(rad[axis]),
-          cy = ft.attrs.center.y + ft.attrs.translate.y + radius[axis] * ft.opts.distance * Math.sin(rad[axis])
+          cx = ft.attrs.center.x + ft.attrs.translate.x + radius[axis] * distance * Math.cos(rad[axis]),
+          cy = ft.attrs.center.y + ft.attrs.translate.y + radius[axis] * distance * Math.sin(rad[axis])
           ;
 
           // Keep handle within boundaries
@@ -277,22 +282,23 @@
           opacity: .5
         });
 
-        if (ft.opts.handle_images && ft.opts.handle_images[axis]) {
+        if (ft.opts.handles[axis].image) {
+          var size = (ft.opts.handles[axis].size)? ft.opts.handles[axis].size : ft.opts.size.axes;
           ft.handles[axis].disc = paper
-          .transformIcon(ft.opts.handle_images[axis], ft.attrs.center.x, ft.attrs.center.y, ft.opts.size.axes);
+          .transformIcon(ft.opts.handles[axis].image, ft.attrs.center.x, ft.attrs.center.y, size);
         } else {
           ft.handles[axis].disc = paper
-          .circle(ft.attrs.center.x, ft.attrs.center.y, ft.opts.size.axes);
+          .circle(ft.attrs.center.x, ft.attrs.center.y, size);
         }
 
         // ZIGGY: attach attributes specified on the handles
         ft.handles[axis].disc.attr(ft.opts.attrs);
-        if (ft.opts.handle_attrs && ft.opts.handle_attrs[axis]) {
-          ft.handles[axis].disc.attr(ft.opts.handle_attrs[axis]);
+        if (ft.opts.handles[axis].attrs) {
+          ft.handles[axis].disc.attr(ft.opts.handles[axis].attrs);
         }
 
-        if (ft.opts.handle_classes && ft.opts.handle_classes[axis]) {
-          ft.handles[axis].disc.node.setAttribute("class", ft.opts.handle_classes[axis]);
+        if (ft.opts.handles[axis].classes) {
+          ft.handles[axis].disc.node.setAttribute("class", ft.opts.handles[axis].classes);
         }
 
         // ZIGGY: attach event handler to the evented handles
@@ -449,7 +455,8 @@
           // axis is horizontal or vertical
           if ( scale ) {
             var local_axis = getCartesianAxisForDirection(axis);
-            ft.attrs.scale[local_axis] = radius / ( ft.o.size[local_axis] / 2 * ft.opts.distance );
+            var distance = (ft.opts.handles[axis].distance)? ft.opts.handles[axis].distance : ft.opts.distance;
+            ft.attrs.scale[local_axis] = radius / ( ft.o.size[local_axis] / 2 * distance );
 
             // ZIGGY:QUESTION again this seems to indicate that mirrored means
             // "your shrink became a grow"

@@ -168,29 +168,51 @@ Sets the radius of the handles in pixels.
 
 Default: `5`
 
-####  `handle_images: false | { east: string, south: string, west: string, north: string }`
+### `handles: { center: object, east: object, south: object, west: object, north: object }`
 
-Sets the images to be used for each handle. If only some of the handles are
+Trust me, there will be times when symmetry just won't cut it. If you need to
+specify some attributes on one handle or another, such as size or distance, you
+can pass just that attribute into the `handles` hash for just that handle, and
+voila!
+
+The options available for the handles hash are:
+
+####  `image: string`
+
+Sets the image to be used for this handle. If only some of the handles are
 given images, the rest will be drawn normally. The images will be scaled
-to match the axis size option given above. If the false value is passed in,
-then the handles will be rendered as circles.
+to match the axis size option given above.
 
 Default: false
 
 
-####  `handle_attrs: false | { east: string, south: string, west: string, north: string }`
+#### `attrs: { fill: hex, stroke: hex }`
 
-Sets the attributes of each handle individually, in addition to any attributes
+Sets the attributes of the given handles individually, in addition to any attributes
 previously set with `attrs`. The given values cascade over the previosuly set
-attrs, so if `attrs: { fill: 'red', stroke: 'blue' }` and `handle_attrs: { east: { fill: 'blue' } }`,
-then the east handle will have a blue fill and a blue outline.
+attrs, so if `attrs: { fill: 'red', stroke: 'blue' }` is set globally, and `attrs: { fill: 'blue' }`
+is set for just the east handle, then the east handle will have a blue fill and a blue outline.
 
 Default: false
 
 
-####  `handle_classes: false | { east: string, south: string, west: string, north: string }`
+####  `classes: string`
 
-Sets classes on the handles. This can be useful!
+Sets classes on the handle. This can be useful!
+
+Default: false
+
+
+####  `size: number`
+
+Sets size for just the specified handles.
+
+Default: false
+
+
+####  `distance: number`
+
+Sets distance for just the specified handles.
 
 Default: false
 

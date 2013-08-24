@@ -14,13 +14,14 @@
     to have the distance, size, and position of the handles be arbitrary, as well
     as the number of handles.
 [ ] All options must be abstracted.
+[x] The `handle_blah` options need to be collected together
 
 ## Icons
 
 [x] The handles can currently have fill colour and size set on them, but I want
     to be able to specify icons to be used. Not sure whether we would use
     favicons, arbitrary URLs, or a small set of icons...
-[ ] Allow sizes to be specified per handle
+[x] Allow sizes to be specified per handle
 [x] Allow attrs to be specified per handle, with the top level attrs option
     being the default and the rest cascading (so if you set fill and stroke
     on attrs, and only fill on south-attrs, then it will still get the stroke
@@ -40,3 +41,8 @@
     it stands we can only specify a ratio, but that is a problem with long thin
     objects.
 [x] We should be able to add custom classes to the handles
+[ ] We should be able to customize the handle offset (this is harder)
+
+## Maintenance & Debugging
+
+[ ] I need to do the "Force Numbers" part of each of my new attributes
