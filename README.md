@@ -117,22 +117,33 @@ Limit the range of transformation.
 Default: `{ rotate: [ -180, 180 ], scale: [ 0, 99999 ] }`
 
 
-#### `rotate: true | [ 'axisX', 'axisY', 'self' ]|false`
+#### `rotate: true | [ 'axisEAST', 'axisSOUTH', 'axisWEST', 'axisNORTH', 'bboxCorners', 'bboxSides' ] | false`
 
 Enables/disables rotating. Values like 'axisNORTH' enable control of rotational transformations on
 just the selected handle, while 'bboxCorners' enables rotation for all corner handles.
 
-Default: `[ 'axisX', 'axisY' ]`
+Default: `[ 'axisEAST', 'axisSOUTH', 'axisWEST', 'axisNORTH']`
 
 
-#### `scale: true | [ 'axisX', 'axisY', 'bboxCorners', 'bboxSides' ] | false`
+#### `scale: true | [ 'axisEAST', 'axisSOUTH', 'axisWEST', 'axisNORTH', 'bboxCorners', 'bboxSides' ] | false`
 
 Enables/disables scaling. When 'axisNORTH' or 'axisSOUTH' are provided,
 the handle controls scaling along the y-axis, in both directions at once.
 When 'axisEAST' or 'axisWEST' are provided, scaling is along the x-axis.
 Values like 'bboxCorners' enable scaling by dragging corner handles.
 
-Default: `[ 'axisX', 'axisY', 'bboxCorners', 'bboxSides' ]`
+Default: `[ 'axisEAST', 'axisSOUTH', 'axisWEST', 'axisNORTH', 'bboxCorners', 'bboxSides' ]`
+
+#### `evented: true | [ 'axisEAST', 'axisSOUTH', 'axisWEST', 'axisNORTH' ] | false`
+
+When evented is set, the given handles are registered to receive click events
+from the browser. This option can be combined with rotate and scale, or it
+can be used on its own to create a handle that has not transformation but
+receives click events.
+
+At the moment the handle only receives the event.
+
+Default: false
 
 
 #### `snap: { rotate: num, scale: num, drag: num }`: 

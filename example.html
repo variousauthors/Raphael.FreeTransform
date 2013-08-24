@@ -1,6 +1,22 @@
 <script type="text/javascript" src="raphael-min.js"></script>
 <script type="text/javascript" src="raphael.free_transform.js"></script>
 
+<div id="options">
+  <pre>
+    ft = paper.freeTransform(rect, {
+      draw: ['circle'],
+      drag:['self'],
+      scale: ['axisNORTH'], // the north handle scales and preserves ratio
+      keepRatio: ['axisNORTH'],
+      rotate: ['axisSOUTH'], // the south handle rotates and receives click events
+      evented: ['axisWEST', 'axisSOUTH'], // the west handle receives click events
+      size: 10,
+      handle_images: { north: 'warn_icon.png' }}, function(ft, events) {
+        console.log(ft.attrs);
+      });
+    }
+  </pre>
+</div>
 <div id="holder" style="height: 100%;"></div>
 
 <script type="text/javascript">
@@ -34,7 +50,8 @@
         drag:['self'],
         keepRatio: ['axisNORTH'],
         rotate: ['axisSOUTH'],
-        scale: ['axisNORTH', 'axisWEST'],
+        scale: ['axisNORTH'],
+        evented: ['axisWEST', 'axisSOUTH'],
         size: 10,
         handle_images: { north: 'warn_icon.png' }}, function(ft, events) {
         // callback console.log(ft.attrs);

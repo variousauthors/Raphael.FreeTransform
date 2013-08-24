@@ -110,10 +110,12 @@
         range: { rotate: [ -180, 180 ], scale: [ -99999, 99999 ] },
         rotate: true,
         scale: true,
+        evented: false,
         snap: { rotate: 0, scale: 0, drag: 0 },
         snapDist: { rotate: 0, scale: 0, drag: 7 },
         size: 5,
-        handle_images: { center: null, east: null, south: null, west: null, north: null }
+        handle_images: { center: null, east: null, south: null, west: null, north: null },
+        handle_classes: { center: null, east: null, south: null, west: null, north: null }
       },
       subject: subject
     };
@@ -282,6 +284,15 @@
           .circle(ft.attrs.center.x, ft.attrs.center.y, ft.opts.size.axes)
           .attr(ft.opts.attrs)
           ;
+        }
+
+        // ZIGGY: attach event handler to the evented handles
+        if (ft.opts.evented) {
+          if (ft.opts.evented.indexOf('axis' + axis.toUpperCase()) !== -1) {
+            ft.handles[axis].disc.click(function() {
+              console.log("click");
+            });
+          }
         }
       });
 
@@ -811,15 +822,22 @@
         }
       });
 
+      console.log(ft.opts.scale);
+      console.log(ft.opts.rotate);
+      console.log(ft.opts.evented);
+
       // ZIGGY: axis is used as a sort of label for the handles, it is always accompanied by
       // ft.handles[axis]. I think we could replace this with 'direction' and have an arbitrary
       // number of handles
       ft.axes = [];
 
-      if ( ft.opts.rotate.indexOf('axisEAST') >= 0 || ft.opts.scale.indexOf('axisEAST') >= 0 ) { ft.axes.push('east'); }
-      if ( ft.opts.rotate.indexOf('axisSOUTH') >= 0 || ft.opts.scale.indexOf('axisSOUTH') >= 0 ) { ft.axes.push('south'); }
-      if ( ft.opts.rotate.indexOf('axisWEST') >= 0 || ft.opts.scale.indexOf('axisWEST') >= 0 ) { ft.axes.push('west'); }
-      if ( ft.opts.rotate.indexOf('axisNORTH') >= 0 || ft.opts.scale.indexOf('axisNORTH') >= 0 ) { ft.axes.push('north'); }
+      var merged_opts = ft.opts.rotate.concat(ft.opts.scale.concat(ft.opts.evented));
+      console.log(merged_opts);
+
+      if ( merged_opts.indexOf('axisEAST') >= 0) { ft.axes.push('east'); }
+      if ( merged_opts.indexOf('axisSOUTH') >= 0) { ft.axes.push('south'); }
+      if ( merged_opts.indexOf('axisWEST') >= 0) { ft.axes.push('west'); }
+      if ( merged_opts.indexOf('axisNORTH') >= 0) { ft.axes.push('north'); }
 
       [ 'drag', 'rotate', 'scale' ].map(function(option) {
           if ( !ft.opts.snapDist[option] ) {

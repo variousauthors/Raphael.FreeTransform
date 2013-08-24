@@ -24,4 +24,7 @@
 
 ## Event Listening
 
-The handles should be easily accessible for attaching event listeners.
+[ ] The handles should be easily accessible for attaching event listeners.
+    perhaps this means adding classes and IDs to the elements being created?
+[ ] Should add the option "evented" so that we can add handles that neither
+    scale nor rotate, but are just there to listen to events.
