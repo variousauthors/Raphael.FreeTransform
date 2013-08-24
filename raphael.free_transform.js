@@ -114,6 +114,7 @@
         north: ( ft.attrs.rotate + 270 ) * Math.PI / 180
       };
 
+      // ZIGGY: radius gets used again WAY down below
       var radius = {
         east: ft.attrs.size.x / 2 * ft.attrs.scale.x,
         south: ft.attrs.size.y / 2 * ft.attrs.scale.y,
@@ -198,11 +199,12 @@
         }
       }
 
+      // ZIGGY: here radius gets dereferenced and we use the max of the radii
       if ( ft.circle ) {
         ft.circle.attr({
           cx: ft.attrs.center.x + ft.attrs.translate.x,
           cy: ft.attrs.center.y + ft.attrs.translate.y,
-          r:  Math.max(radius.x, radius.y) * ft.opts.distance
+          r:  Math.max(radius.east, radius.south, radius.west, radius.north) * ft.opts.distance
         });
       }
 
@@ -216,6 +218,7 @@
       // ZIGGY: there doesn't seem to be a way for rotate to have 'self'
       // possible value are 'axisX' and 'axisY'
       if ( ft.opts.rotate.indexOf('self') >= 0 ) {
+        console.log("somehow this got called");
         radius = Math.max(
           Math.sqrt(Math.pow(corners[1].x - corners[0].x, 2) + Math.pow(corners[1].y - corners[0].y, 2)),
           Math.sqrt(Math.pow(corners[2].x - corners[1].x, 2) + Math.pow(corners[2].y - corners[1].y, 2))
@@ -711,7 +714,7 @@
       // ZIGGY:RADAR again with the literals
       // this is not problem though, since we can just extend this
       // array to contain north south, etc
-      [ 'east', 'south', 'west' ].map(function(axis) {
+      [ 'east', 'south', 'west', 'north' ].map(function(axis) {
           if ( ft.handles[axis] ) {
           ft.handles[axis].disc.remove();
           ft.handles[axis].line.remove();

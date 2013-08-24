@@ -29,7 +29,7 @@
     ft.unplug();
 
     // Add freeTransform with options and callback
-    ft = paper.freeTransform(rect, {draw: ['bbox', 'circle']}, function(ft, events) {
+    ft = paper.freeTransform(rect, {draw: 'bbox'}, function(ft, events) {
         console.log(ft.attrs);
     });
 
