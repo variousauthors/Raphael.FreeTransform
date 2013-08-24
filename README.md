@@ -19,40 +19,83 @@ Examples
 <script type="text/javascript" src="raphael-min.js"></script>
 <script type="text/javascript" src="raphael.free_transform.js"></script>
 
+<div id="options">
+  <pre>
+    ft = paper.freeTransform(rect, {
+      draw: ['circle'],
+      drag:['self'],
+      distance: 1.5,
+      keepRatio: ['axisNORTH'],
+      attrs: { fill: 'green', stroke: 'blue' },
+      handle_attrs: {
+        west: { fill: 'red' },
+      },
+      handle_classes: {
+        north: "master", west: "slave"
+      },
+      rotate: ['axisSOUTH'],
+      scale: ['axisNORTH'],
+      evented: ['axisWEST', 'axisSOUTH'],
+      snap: { scale: 0.0001, rotate: 0 },
+      size: 10,
+      handle_images: { 
+        north: 'images/scale_icon.png', 
+        south: 'images/rotate_icon.png', 
+        west: 'images/delete_icon.png' }
+    }, function(ft, events) {
+      // callback console.log(ft.attrs);
+    });
+  </pre>
+</div>
 <div id="holder" style="height: 100%;"></div>
 
 <script type="text/javascript">
-	var paper = Raphael(0, 0, 500, 500);
+    var paper = Raphael(0, 0, 500, 500);
 
-	var rect = paper
-		.rect(200, 200, 100, 100)
-		.attr('fill', '#f00')
-		;
+    var rect = paper
+        .rect(350, 200, 100, 100)
+        .attr('fill', '#f00')
+        ;
 
-	// Add freeTransform
-	var ft = paper.freeTransform(rect);
+    // Add freeTransform
+    var ft = paper.freeTransform(rect);
 
-	// Hide freeTransform handles
-	ft.hideHandles();
+    // Hide freeTransform handles
+    ft.hideHandles();
 
-	// Show hidden freeTransform handles
-	ft.showHandles();
+    // Show hidden freeTransform handles
+    ft.showHandles();
 
-	// Apply transformations programmatically
-	ft.attrs.rotate = 45;
+    // Apply transformations programmatically
+    // ft.attrs.rotate = 45;
 
-	ft.apply();
+    ft.apply();
 
-	// Remove freeTransform completely
-	ft.unplug();
+    // Remove freeTransform completely
+    ft.unplug();
 
-	// Add freeTransform with options and callback
-	ft = paper.freeTransform(rect, { keepRatio: true }, function(ft, events) {
-		console.log(ft.attrs);
-	});
+    // Add freeTransform with options and callback
+    ft = paper.freeTransform(rect, {
+      draw: ['circle'],
+      drag:['self'],
+      keepRatio: ['axisNORTH'],
+      attrs: { fill: 'green', stroke: 'blue' },
+      rotate: ['axisSOUTH'],
+      scale: ['axisNORTH'],
+      evented: ['axisWEST', 'axisSOUTH'],
+      snap: { scale: 0.0001, rotate: 0 },
+      handles: {
+        east: {},
+        south: { image: 'images/rotate_icon.png', size: 15 },
+        west: { attrs: { fill: 'red' }, classes: 'slave', image: 'images/delete_icon.png', distance: 2 },
+        north: { classes: 'master', image: 'images/scale_icon.png', size: 15 },
+      },
+      size: 10,
+      distance: 1.5,
+    }, function(ft, events) {
+      // callback console.log(ft.attrs);
+    });
 
-	// Change options on the fly
-	ft.setOpts({ keepRatio: false });
 </script>
 ```
 
@@ -174,6 +217,8 @@ Trust me, there will be times when symmetry just won't cut it. If you need to
 specify some attributes on one handle or another, such as size or distance, you
 can pass just that attribute into the `handles` hash for just that handle, and
 voila!
+
+Check the example above for a detailed... example.
 
 The options available for the handles hash are:
 
