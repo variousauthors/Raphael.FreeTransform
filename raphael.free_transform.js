@@ -37,6 +37,7 @@
     };
 
     icon.attrs = icon[0].attrs;
+    icon.node = icon[0].node;
     return icon;
   };
 
@@ -823,17 +824,12 @@
         }
       });
 
-      console.log(ft.opts.scale);
-      console.log(ft.opts.rotate);
-      console.log(ft.opts.evented);
-
       // ZIGGY: axis is used as a sort of label for the handles, it is always accompanied by
       // ft.handles[axis]. I think we could replace this with 'direction' and have an arbitrary
       // number of handles
       ft.axes = [];
 
       var merged_opts = ft.opts.rotate.concat(ft.opts.scale.concat(ft.opts.evented));
-      console.log(merged_opts);
 
       if ( merged_opts.indexOf('axisEAST') >= 0) { ft.axes.push('east'); }
       if ( merged_opts.indexOf('axisSOUTH') >= 0) { ft.axes.push('south'); }
