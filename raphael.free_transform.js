@@ -15,6 +15,31 @@
     factory(Raphael);
   }
 }(this, function(Raphael) {
+  Raphael.fn.transformIcon = function(img, x, y){
+    var icon = this.set();
+    icon.push(this.circle(x, y, 8).attr({
+      fill: '#99b',
+      stroke: '#446',
+      'fill-opacity': 0.85
+    }));
+    icon.push(this.image(img, x-8, y-8, 16, 16));
+    // icon.draggable();
+    icon.attr = function(obj) {
+      this[0].attr(obj);
+      if(obj.cx){
+        obj.x = obj.cx - 8;
+      }
+      if(obj.cy){
+        obj.y = obj.cy - 8;
+      }
+      this[1].attr(obj);
+      return this;
+    };
+
+    icon.attrs = icon[0].attrs;
+    return icon;
+  };
+
   Raphael.fn.freeTransform = function(subject, options, callback) {
     // Enable method chaining
     if ( subject.freeTransform ) { return subject.freeTransform; }
@@ -87,7 +112,8 @@
         scale: true,
         snap: { rotate: 0, scale: 0, drag: 0 },
         snapDist: { rotate: 0, scale: 0, drag: 7 },
-        size: 5
+        size: 5,
+        handle_images: { center: null, east: null, south: null, west: null, north: null }
       },
       subject: subject
     };
@@ -246,10 +272,17 @@
           opacity: .5
         });
 
-        ft.handles[axis].disc = paper
-        .circle(ft.attrs.center.x, ft.attrs.center.y, ft.opts.size.axes)
-        .attr(ft.opts.attrs)
-        ;
+        if (ft.opts.handle_images[axis]) {
+          ft.handles[axis].disc = paper
+          .transformIcon(ft.opts.handle_images[axis], ft.attrs.center.x, ft.attrs.center.y)
+          .attr(ft.opts.attrs)
+          ;
+        } else {
+          ft.handles[axis].disc = paper
+          .circle(ft.attrs.center.x, ft.attrs.center.y, ft.opts.size.axes)
+          .attr(ft.opts.attrs)
+          ;
+        }
       });
 
       // ZIGGY mark off a bounding box, potentially with scaling handles

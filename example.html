@@ -29,8 +29,14 @@
     ft.unplug();
 
     // Add freeTransform with options and callback
-    ft = paper.freeTransform(rect, {draw: ['bbox', 'circle'], keepRatio: ['axisNORTH'], rotate: ['axisSOUTH'] }, function(ft, events) {
-        console.log(ft.attrs);
+    ft = paper.freeTransform(rect, {
+        draw: ['circle'],
+        drag:['self'],
+        keepRatio: ['axisNORTH'],
+        rotate: ['axisSOUTH'],
+        size: 7,
+        handle_images: { north: 'warn_icon.png' }}, function(ft, events) {
+        // callback console.log(ft.attrs);
     });
 
 </script>
